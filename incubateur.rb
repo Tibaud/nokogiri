@@ -8,6 +8,13 @@ def get_the_webpage(url)
 	scrap.each do |node| return "Site:" + node.text
 	end
 end
+#on créé la boucle pour récupérer le code postal
+def get_the_cp(url)
+	page = Nokogiri::HTML(open(url))
+	scrap = page.xpath('//div/strong')
+	scrap.each do |node| return node.text
+	end
+end
 #on découpe l'URL initiale
 def get_all_the_webpages(url)
 	h = {}
@@ -18,17 +25,16 @@ def get_all_the_webpages(url)
 		end
 		nom = "Nom: " + nom * "-"
 		url = 'http://mon-incubateur.com/' + node['href'].slice!(1..-1)
-		#on lance la boucle pour href des incubateurs
-		site = get_the_webpage(url)
-		#on stock les datas
-		h.store(nom,site)
-	end
-
-#on génère le fichier avec les datas dans un format lisible pour le seo
-fname = "my_incub.out"
-somefile = File.open(fname,"w")
-somefile.puts h
-somefile.close
+		#on lance la boucle pour href des incubateurs et le CP
+    site = get_the_webpage(url)
+    cp = get_the_cp(url)
+    #normallement je stock dansun fichier mais ça ne marche pas, à discuter avec plaisir
+    #fname = "my_incub.out"
+    #somefile = File.open(fname,"w")
+    #somefile.puts "#{nom} #{site} #{cp}"
+    #somefile.close
+    #donc on puts
+    puts "#{nom} #{site} #{cp}"
+    end
 end
-
 get_all_the_webpages("http://mon-incubateur.com/site_incubateur/incubateurs")
